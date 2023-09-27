@@ -8,18 +8,19 @@ import { useNavigate } from 'react-router-dom';
 function AdminTable() {
   const navigate = useNavigate()
   const [isUserDeleted, setIsUserDeleted] = useState(false);
-  const [users, setUsers] = useState([]);
+  // const [users, setUsers] = useState([]);
   const axiosPrivate = useAxiosPrivate()
   const dispatch = useDispatch()
-  // const users = useSelector((state)=> state.admin.users)
+  const users = useSelector((state)=> state.admin.users)
 
-  console.log(isUserDeleted);
+  // console.log(isUserDeleted);
 
   const handleDelete = (id) =>{
     axiosPrivate.delete('/admin/delete?id='+id)
     .then((res)=>{
       setIsUserDeleted(true)
     })
+
   }
 
   const handleEdit = (name) =>{
@@ -30,13 +31,18 @@ function AdminTable() {
 
     axiosPrivate.get('/admin/users')
     .then((response)=>{
-      // console.log(response.data.users);
-      setUsers(response?.data?.users)
-      // dispatch(setUsers({users: response?.data?.users}))
-      console.log(users);
+      console.log(response.data.users);
+      // setUsers(response?.data?.users)
+      dispatch(setUsers({users: response.data.users}))
     })
     
-  }, [isUserDeleted]);
+    console.log(users);
+
+    return ()=>{
+      setIsUserDeleted(false)
+    }
+    
+  }, [isUserDeleted, dispatch]);
 
   
 

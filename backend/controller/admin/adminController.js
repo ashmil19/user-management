@@ -2,8 +2,16 @@ const userModel = require('../../models/userModel')
 
 const getAllUser = async (req, res) =>{
     try {
-        
-        const users = await userModel.find({isAdmin: false});
+        let search = req.query.search || ""
+        const query = {
+            isAdmin: false,
+            $or: [
+                {name: { $regex: new RegExp(`^${search}`, "i") }},
+                {email: { $regex: new RegExp(`^${search}`, "i") },}
+            ]
+        }
+
+        const users = await userModel.find(query);
         res.status(200).json({users})
 
     } catch (error) {
