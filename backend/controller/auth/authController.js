@@ -57,8 +57,10 @@ const handleLogin = async (req, res)=>{
       { expiresIn: '1d'}
     )
 
-    res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'None', secure: true ,maxAge: 24 * 60 * 60 * 1000})
+    userData.refreshToken = refreshToken
+    await userData.save();
 
+    res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000})
     res.status(200).json({isAdmin: userData.isAdmin, accessToken ,message: "your account is verified"})
     
   } catch (error) {
@@ -72,10 +74,12 @@ const handleRefreshToken = async (req, res)=>{
 
     const cookies = req.cookies
 
+    console.log('hai',req.cookies.jwt);
     if(!cookies?.jwt) return res.sendStatus(401); 
     const refreshToken = cookies.jwt
     
     const userData = await userModel.findOne({ refreshToken: refreshToken })
+    console.log(userData);
     if(!userData) return res.sendStatus(403)
 
     //evalute jwt
@@ -83,7 +87,7 @@ const handleRefreshToken = async (req, res)=>{
       refreshToken,
       process.env.REFRESH_TOKEN_SECRET,
       (err, decoded)=>{
-        if(err || userData.name !== decoded.name) return res.sendStatus(403);
+        if(err || userData.name !== decoded.username) return res.sendStatus(403);
         const accessToken = jwt.sign(
           {"username": decoded.name},
           process.env.ACCESS_TOKEN_SECRET,
@@ -116,7 +120,7 @@ const handleLogout = async (req, res)=>{
     // Delete refreshToken in db
     await userModel.deleteOne({refreshToken: refreshToken})
 
-    res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true })
+    res.clearCookie('jwt', { httpOnly: true })
     res.sendStatus(204)
     
   } catch (error) {

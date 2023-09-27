@@ -9,6 +9,7 @@ import Admin from './pages/Admin'
 import ErrorPage from './pages/ErrorPage'
 
 import RequireAuth from './components/RequireAuth'
+import CheckAuth from './components/checkAuth'
 
 function App() {
 
@@ -18,8 +19,11 @@ function App() {
       <Routes>
         <Route path='/' element={<Layout />} >
           {/* public routes */}
-          <Route path='login' element={<Login />} />
-          <Route path='signup' element={<Signup />} />
+          {/* <Route element={<CheckAuth allows={true} /> }> */}
+            <Route path='login' element={<Login />} />
+            <Route path='signup' element={<Signup />} />
+          {/* </Route> */}
+          
           <Route path='error' element={<ErrorPage />} />
 
           {/* protected routes */}
