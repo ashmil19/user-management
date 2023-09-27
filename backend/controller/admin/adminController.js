@@ -3,7 +3,7 @@ const userModel = require('../../models/userModel')
 const getAllUser = async (req, res) =>{
     try {
         
-        const users = await userModel.find();
+        const users = await userModel.find({isAdmin: false});
         res.status(200).json({users})
 
     } catch (error) {
@@ -11,7 +11,37 @@ const getAllUser = async (req, res) =>{
     }
 }
 
+const editUser = async (req, res) =>{
+    try {
+
+        console.log(req.body);
+        const {name, email} = req.body
+        await userModel.findOneAndUpdate({name},{
+            email: email
+        })
+
+        res.status(200).json({success: "update.."})
+        
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const deleteUser = async(req, res) =>{
+    try {
+
+        const {id} = req.query;
+        await userModel.findByIdAndDelete(id)
+        res.status(200).json({message: "user Deleted"})
+        
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 
 module.exports = {
     getAllUser,
+    deleteUser,
+    editUser,
 }

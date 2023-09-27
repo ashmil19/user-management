@@ -21,7 +21,7 @@ const userSchema = new schema({
     },
     profileImage: {
         type: String,
-        default: ""
+        default: "person.svg"
     },
     createdAt: {
         type: Date,

@@ -1,10 +1,50 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux';
+import useAxiosPrivate  from '../hooks/useAxiosPrivate';
+import { IMAGE_BASE_URL } from '../constants/constants';
+import { useNavigate } from 'react-router-dom';
 
 function Profile() {
+  const axiosPrivate = useAxiosPrivate()
+  const [userData, setUserData] = useState({})
+  const [image, setImage] = useState(null)
+  const authstate = useSelector((state)=> state.auth)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    
+    axiosPrivate.get(`/user/getuser?name=${authstate.user}`)
+    .then((res)=>{
+      setUserData(res?.data?.user)
+      console.log(res?.data?.user);
+    })
+  }, []);
+
+  const handleSubmit = () =>{
+    if(!image){
+      alert("no image")
+      return
+    }
+
+    
+    const postData = {
+      id: userData._id,
+      image
+    }
+
+    axiosPrivate.post("/user/image",postData,{
+      headers: {'Content-Type': 'multipart/form-data'}
+    })
+    .then((res)=>{
+      alert("success")
+    })
+
+  }
+
   return (
     <div className="flex justify-center items-center h-screen">
         <div className="w-full max-w-sm bg-white rounded-lg shadow-xl">
-          <div className="flex justify-end px-4 pt-4">
+          <form encType='multipart/form-data' className="flex justify-end px-4 pt-4">
             <button
               id="dropdownButton"
               className="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5"
@@ -53,11 +93,12 @@ function Profile() {
                 </li>
               </ul>
             </div>
-          </div>
+          </form>
           <div className="flex flex-col items-center pb-10">
             {'userData' && (
               <img
                  // Access the image URL from the userData object
+                src={image ? URL.createObjectURL(image) : IMAGE_BASE_URL+userData.profileImage}
                 className="w-24 h-24 mb-3 rounded-full shadow-lg"
                 alt="profile picture"
                 onError={() => {
@@ -68,14 +109,14 @@ function Profile() {
             )}
 
             <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-dark">
-              {/* {userData ? userData.username : ""} */}
+              {userData ? userData.name : ""}
             </h5>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              {/* {userData ? userData.email : ""} */}
+            <span className="text-sm text-gray-900 dark:text-gray-900 font-medium">
+              {userData ? userData.email : ""}
             </span>
             <div className="flex mt-4 space-x-3 md:mt-6">
               <input
-                // onChange={(e) => setImage(e.target.files[0])}
+                onChange={(e) => setImage(e.target.files[0])}
                 type="file"
                 id="imageInput"
                 style={{ display: "none" }}
@@ -88,13 +129,14 @@ function Profile() {
                 Change Image
               </label>
 
-              <a
-                
+              <p
+                onClick={handleSubmit}
                 className="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-700 dark:focus:ring-gray-700"
               >
                 Submit Image
-              </a>
+              </p>
             </div>
+            <p onClick={()=> navigate(-1)} className='mt-4 font-medium border-2 border-gray-600 px-2 py-1 rounded bg-gray-600 text-white cursor-pointer'>Back</p>
           </div>
         </div>
         <div>
