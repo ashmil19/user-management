@@ -35,6 +35,21 @@ const editUser = async (req, res) =>{
     }
 }
 
+const deleteEmail = async(req, res) =>{
+    try {
+
+        const {id} = req.query
+        await userModel.findOneAndUpdate({_id: id},{
+            $un
+        })
+
+        res.sendStatus(200);
+        
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 const deleteUser = async(req, res) =>{
     try {
 
@@ -52,4 +67,5 @@ module.exports = {
     getAllUser,
     deleteUser,
     editUser,
+    deleteEmail,
 }

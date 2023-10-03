@@ -116,9 +116,11 @@ const handleLogout = async (req, res)=>{
       res.clearCookie('jwt', {httpOnly: true})
       return res.sendStatus(204)
     }
-
+    
     // Delete refreshToken in db
-    await userModel.deleteOne({refreshToken: refreshToken})
+    // await userModel.updateOne({refreshToken: refreshToken},{refreshToken: ""});
+     userData.refreshToken = ""
+    await userData.save();
 
     res.clearCookie('jwt', { httpOnly: true })
     res.sendStatus(204)
