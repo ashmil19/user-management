@@ -2,12 +2,18 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { logOut } from '../features/auth/authSlice'
+import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
 function Home() {
+  const axiosPrivate = useAxiosPrivate()
   const authstate = useSelector((state)=> state.auth)
   const dispatch = useDispatch()
 
   const handleLogout = () =>{
+    axiosPrivate.get("/logout")
+    .then((response)=>{
+      console.log("success");
+    })
     dispatch(logOut())
   }
 

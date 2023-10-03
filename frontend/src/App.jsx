@@ -22,12 +22,11 @@ function App() {
       <Routes>
         <Route path='/' element={<Layout />} >
           {/* public routes */}
-          {/* <Route element={<CheckAuth allows={true} /> }> */}
+          <Route element={<CheckAuth />}>
             <Route path='login' element={<Login />} />
             <Route path='signup' element={<Signup />} />
-          {/* </Route> */}
-          
-          <Route path='error' element={<ErrorPage />} />
+          </Route>
+
 
           {/* protected routes */}
           <Route element={<RequireAuth allows={false} />}>

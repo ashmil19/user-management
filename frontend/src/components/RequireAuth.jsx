@@ -8,10 +8,10 @@ const RequireAuth = ({allows})=> {
 
     return (
         authstate?.isAdmin == allows
-            ? <Outlet />
+            ? <Outlet state={{from: location}} />
             : authstate?.user
-            ? <Navigate to="/error" state={{ from: location }} replace />
-            : <Navigate to="/login" state={{ from: location }} replace />
+            ? <Navigate to={location.state?.from || authstate.isAdmin ? '/admin' : '/'} replace />
+            : <Navigate to="/login" state={{ from: location.pathname }} replace />
     )
 }
 

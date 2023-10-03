@@ -1,13 +1,11 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import toast,{Toaster} from 'react-hot-toast';
 import {Link, useNavigate} from 'react-router-dom';
 import { useDispatch } from 'react-redux'
 import axios from '../axios'
-import useAuth from '../hooks/useAuth';
 import { setCredentials } from '../features/auth/authSlice';
 
 function Login() {
-  const { setAuth } = useAuth()
   const dispatch = useDispatch();
   const navigate = useNavigate()
   const [name, setName] = useState('');
@@ -55,7 +53,6 @@ function Login() {
     .then((res)=>{
       console.log(res.data.isAdmin);
       console.log(res.data.accessToken);
-      setAuth({name, isAdmin: res.data.isAdmin, accessToken: res.data.accessToken})
       const userCredentials = {
         user: name,
         accessToken: res.data.accessToken,
@@ -65,8 +62,8 @@ function Login() {
       res.data.isAdmin ? navigate('/admin') : navigate('/')
     })
     .catch((err)=>{
-      // showToast(err?.response?.data?.message)
-      showToast(err?.message)
+      showToast(err?.response?.data?.message)
+      // showToast(err?.message)
       console.log(err);
     })
     

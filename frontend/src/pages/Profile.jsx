@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import useAxiosPrivate  from '../hooks/useAxiosPrivate';
 import { IMAGE_BASE_URL } from '../constants/constants';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function Profile() {
   const axiosPrivate = useAxiosPrivate()
@@ -10,6 +10,7 @@ function Profile() {
   const [image, setImage] = useState(null)
   const authstate = useSelector((state)=> state.auth)
   const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     
@@ -136,7 +137,7 @@ function Profile() {
                 Submit Image
               </p>
             </div>
-            <p onClick={()=> navigate(-1)} className='mt-4 font-medium border-2 border-gray-600 px-2 py-1 rounded bg-gray-600 text-white cursor-pointer'>Back</p>
+            <p onClick={()=> navigate("/")} className='mt-4 font-medium border-2 border-gray-600 px-2 py-1 rounded bg-gray-600 text-white cursor-pointer'>Back</p>
           </div>
         </div>
         <div>

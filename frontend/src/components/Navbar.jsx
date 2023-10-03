@@ -4,12 +4,18 @@ import { Transition } from "@headlessui/react";
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logOut } from '../features/auth/authSlice';
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
 
 function Navbar() {
+  const axiosPrivate = useAxiosPrivate()
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch()
 
   const handleLogout = () =>{
+    axiosPrivate.get("/logout")
+    .then((response)=>{
+      console.log("success");
+    })
     dispatch(logOut())
   }
 
